@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Demo</title>
+    </head>
+    <body>
+        <h3>Simple QR Code Reader</h3>
+        <h3>And send data to php</h3>
+        <hr>
+        <canvas with="320" height="240"></canvas>
+        <hr>
+           <input type="button" id="upload" value="upload" onclick="decodeLocalImage();">
+        <ul></ul>
+        
+		<script type="text/javascript" src="js/filereader.js"></script>
+        <script type="text/javascript" src="js/qrcodelib.js"></script>
+        <script type="text/javascript" src="js/webcodecamjs.js"></script>
+        <script type="text/javascript">
+            var txt = "innerText" in HTMLElement.prototype ? "innerText" : "textContent";
+            var arg = {
+                resultFunction: function(result) {
+                    var aChild = document.createElement('li');
+                    aChild[txt] = result.code;
+                    document.querySelector('div').appendChild(aChild);
+					//store dome in hidden variable
+					document.getElementById("hidden1").value = result.code;
+                }
+            };
+            var decoder = new WebCodeCamJS("canvas").init(arg);
+            function decodeLocalImage(){
+                decoder.decodeLocalImage();
+            }
+			function returnData(){
+				return "scandata.php?data="+document.getElementByID("dataPlace").value;
+			}
+        </script>
+		<div id="dataPlace" ></div>
+		
+		<form name="myform" action="<?php echo $_SERVER['$PHP_SELF']; ?>" method="POST">
+			<input type="hidden" name="hidden1" id="hidden1"  />
+		</form>
+
+		<?php
+		   $medData = $_POST['hidden1'];
+		   //$query = "select * from salarie where salarieid = ".$salarieid;
+		   //echo $query;
+		   //$result = mysql_query($query);
+		   print var_dump($medData);
+		?>
+
+    </body>
+</html>
